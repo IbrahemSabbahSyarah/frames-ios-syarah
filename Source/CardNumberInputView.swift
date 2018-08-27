@@ -29,7 +29,9 @@ import UIKit
         cardsUtils = CardUtils()
         #endif
         textField.keyboardType = .default
-        textField.textContentType = .creditCardNumber
+        if #available(iOS 10.0, *) {
+            textField.textContentType = .creditCardNumber
+        }
         textField.delegate = self
         textField.addTarget(self, action: #selector(textFieldDidChange), for: UIControlEvents.editingChanged)
     }

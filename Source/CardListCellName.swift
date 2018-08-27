@@ -30,7 +30,12 @@ public class CardListCellName: CardListCell {
     }
 
     private func addConstraints() {
-        constraints.first { $0.firstAnchor == heightAnchor }?.isActive = false
+        if #available(iOS 10.0, *) {
+        constraints.first {
+            $0.firstAnchor == heightAnchor
+            
+            }?.isActive = false
+        }
         heightAnchor.constraint(equalToConstant: 90).isActive = true
     }
 

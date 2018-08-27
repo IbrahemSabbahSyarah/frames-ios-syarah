@@ -59,7 +59,9 @@ import UIKit
 
         // add values
         textField.keyboardType = .default
-        textField.textContentType = .name
+        if #available(iOS 10.0, *) {
+            textField.textContentType = .name
+        } 
         textField.textAlignment = .right
         stackview.axis = .vertical
         stackview.backgroundColor = .clear

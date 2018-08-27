@@ -58,12 +58,14 @@ public class AddressView: UIView {
         zipInputView.set(label: "postcode", backgroundColor: .white)
         phoneInputView.set(label: "phone", backgroundColor: .white)
         // set content type
+        if #available(iOS 10.0, *) {
         nameInputView.textField.textContentType = .name
         addressLine1InputView.textField.textContentType = .streetAddressLine1
         addressLine2InputView.textField.textContentType = .streetAddressLine2
         cityInputView.textField.textContentType = .addressCity
         stateInputView.textField.textContentType = UITextContentType.addressState
         zipInputView.textField.textContentType = .postalCode
+        }
         // set keyboard
 //        phoneInputView.textField.keyboardType = .phonePad
 

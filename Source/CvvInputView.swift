@@ -30,7 +30,9 @@ import UIKit
 
     private func setup() {
         textField.keyboardType = .numberPad
+        if #available(iOS 10.0, *) {
         textField.textContentType = nil
+        }
         textField.delegate = self
         textField.addTarget(self, action: #selector(textFieldDidChange), for: UIControlEvents.editingChanged)
     }
