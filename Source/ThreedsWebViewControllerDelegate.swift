@@ -4,8 +4,8 @@ import Foundation
 public protocol ThreedsWebViewControllerDelegate: class {
 
     /// Called if the response is successful
-    func onSuccess3D()
+    func onSuccess3D(token:String)
 
     /// Called if the response is unsuccesful
-    func onFailure3D()
+    func onFailure3D(token:String)
 }

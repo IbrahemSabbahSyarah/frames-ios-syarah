@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 /// A view controller that allows the user to enter card information.
-public class CardViewController: UIViewController,
+open class CardViewController: UIViewController,
     AddressViewControllerDelegate,
     CardNumberInputViewDelegate,
     CvvInputViewDelegate,
@@ -35,6 +35,9 @@ public class CardViewController: UIViewController,
     public var rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save,
                                                     target: self,
                                                     action: #selector(onTapDoneCardButton))
+    public var leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save,
+                                                    target: self,
+                                                    action: #selector(onTapBackButton))
 
     // MARK: - Initialization
 
@@ -66,12 +69,17 @@ public class CardViewController: UIViewController,
     // MARK: - Lifecycle
 
     /// Called after the controller's view is loaded into memory.
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         rightBarButtonItem.target = self
         rightBarButtonItem.action = #selector(onTapDoneCardButton)
         navigationItem.rightBarButtonItem = rightBarButtonItem
         navigationItem.rightBarButtonItem?.isEnabled = false
+        
+        leftBarButtonItem.target = self
+        leftBarButtonItem.action = #selector(onTapBackButton)
+        navigationItem.leftBarButtonItem = leftBarButtonItem
+
         // add gesture recognizer
         cardView.addressTapGesture.addTarget(self, action: #selector(onTapAddressView))
         cardView.billingDetailsInputView.addGestureRecognizer(cardView.addressTapGesture)
@@ -86,7 +94,7 @@ public class CardViewController: UIViewController,
     }
 
     /// Notifies the view controller that its view is about to be added to a view hierarchy.
-    public override func viewWillAppear(_ animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         title = "cardViewControllerTitle".localized(forClass: CardViewController.self)
         registerKeyboardHandlers(notificationCenter: notificationCenter,
@@ -95,13 +103,13 @@ public class CardViewController: UIViewController,
     }
 
     /// Notifies the view controller that its view is about to be removed from a view hierarchy.
-    public override func viewWillDisappear(_ animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         deregisterKeyboardHandlers(notificationCenter: notificationCenter)
     }
 
     /// Called to notify the view controller that its view has just laid out its subviews.
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         view.addSubview(cardView)
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.leftAnchor.constraint(equalTo: view.safeLeftAnchor).isActive = true
@@ -111,8 +119,13 @@ public class CardViewController: UIViewController,
     }
 
     private func setInitialDate() {
+        
+        //let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        //let components = calendar.dateComponents([.year], from: Date())
+        
         let calendar = Calendar(identifier: .gregorian)
         let date = Date()
+        
         let month = calendar.component(.month, from: date)
         let year = calendar.component(.year, from: date)
         let monthString = month < 10 ? "0\(month)" : "\(month)"
@@ -121,6 +134,11 @@ public class CardViewController: UIViewController,
 
     @objc func onTapAddressView() {
         navigationController?.pushViewController(addressViewController, animated: true)
+    }
+    
+    @objc func onTapBackButton() {
+
+        dismiss(animated: true, completion: nil)
     }
 
     @objc func onTapDoneCardButton() {

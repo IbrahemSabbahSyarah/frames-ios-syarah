@@ -79,17 +79,26 @@ public class ThreedsWebViewController: UIViewController,
         // get URL conforming to RFC 1808 without the query
         let url = "\(absoluteUrl.scheme ?? "https")://\(absoluteUrl.host ?? "localhost")\(absoluteUrl.path)"
 
-        if url == successUrl {
+        if url.contains(successUrl) {
+            
+            let token = getQueryStringParameter(url: absoluteUrl.absoluteString, param: "cko-payment-token")
             // success url, dismissing the page with the payment token
             self.dismiss(animated: true) {
-                self.delegate?.onSuccess3D()
+                self.delegate?.onSuccess3D(token: token ?? "")
             }
-        } else if url == failUrl {
+        } else if url.contains(failUrl) {
             // fail url, dismissing the page
+            let token = getQueryStringParameter(url: absoluteUrl.absoluteString, param: "cko-payment-token")
+
             self.dismiss(animated: true) {
-                self.delegate?.onFailure3D()
+                self.delegate?.onFailure3D(token: token ?? "")
             }
         }
+    }
+    
+    func getQueryStringParameter(url: String, param: String) -> String? {
+        guard let url = URLComponents(string: url) else { return nil }
+        return url.queryItems?.first(where: { $0.name == param })?.value
     }
 
 }
