@@ -73,12 +73,12 @@ open class CardViewController: UIViewController,
         super.viewDidLoad()
         rightBarButtonItem.target = self
         rightBarButtonItem.action = #selector(onTapDoneCardButton)
-        navigationItem.rightBarButtonItem = rightBarButtonItem
-        navigationItem.rightBarButtonItem?.isEnabled = false
+        navigationItem.rightBarButtonItem = leftBarButtonItem
         
         leftBarButtonItem.target = self
         leftBarButtonItem.action = #selector(onTapBackButton)
-        navigationItem.leftBarButtonItem = leftBarButtonItem
+        navigationItem.leftBarButtonItem = rightBarButtonItem
+        navigationItem.leftBarButtonItem?.isEnabled = false
 
         // add gesture recognizer
         cardView.addressTapGesture.addTarget(self, action: #selector(onTapAddressView))
@@ -209,21 +209,21 @@ open class CardViewController: UIViewController,
 
         // check card holder's name
         if cardHolderNameState == .required && (cardView.cardHolderNameInputView.textField.text?.isEmpty)! {
-            navigationItem.rightBarButtonItem?.isEnabled = false
+            navigationItem.leftBarButtonItem?.isEnabled = false
             return
         }
         // check billing details
         if billingDetailsState == .required && billingDetailsAddress == nil {
-            navigationItem.rightBarButtonItem?.isEnabled = false
+            navigationItem.leftBarButtonItem?.isEnabled = false
             return
         }
         // values are not empty strings
         if cardNumber.isEmpty || expirationDate.isEmpty ||
             cvv.isEmpty {
-            navigationItem.rightBarButtonItem?.isEnabled = false
+            navigationItem.leftBarButtonItem?.isEnabled = false
             return
         }
-        navigationItem.rightBarButtonItem?.isEnabled = true
+        navigationItem.leftBarButtonItem?.isEnabled = true
     }
 
     @objc func keyboardWillShow(notification: NSNotification) {

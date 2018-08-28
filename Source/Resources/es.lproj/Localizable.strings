@@ -1,26 +1,27 @@
 
-"cardNumber" = "Número de tarjeta*";
-"cardholderName" = "Nombre del titular de la tarjeta";
-"cardholderNameRequired" = "Nombre del titular de la tarjeta*";
-"expirationDate" = "Fecha de caducidad*";
-"cvv" = "CVV*";
-"billingDetails" = "Detalles de facturación";
-"billingDetailsRequired" = "Detalles de facturación*";
-"name" = "Nombre";
-"countryRegion" = "País / Región*";
-"addressLine1" = "Dirección Línea 1*";
-"addressLine2" = "Dirección Línea 2*";
-"state" = "Estado*";
-"postalTown" = "Ciudad postal*";
-"postcode" = "Código postal*";
-"phone" = "Teléfono*";
+"cardNumber" = "رقم البطاقة*";
+"cardholderName" = "Cardholder's name";
+"cardholderNameRequired" = "Cardholder's name*";
+"expirationDate" = "تاريخ الانتهاء*";
+"cvv" = "رقم الامان CVV*";
+"billingDetails" = "Billing Details";
+"billingDetailsRequired" = "Billing Details*";
+"name" = "Name";
+"countryRegion" = "Country/Region*";
+"addressLine1" = "Address line 1*";
+"addressLine2" = "Address line 2*";
+"state" = "State*";
+"postalTown" = "Postal Town*";
+"postcode" = "Postcode*";
+"phone" = "Phone*";
 
-"acceptedCards" = "Tarjetas aceptadas";
+"acceptedCards" = "البطاقات المدعومة";
 
-"cardNumberInvalid" = "El número de tarjeta no es válido";
-"cardTypeNotAccepted" = "No se acepta el tipo de tarjeta";
-"cvvInvalid" = "El cvv no es válido";
-"phoneNumberInvalid" = "No válido, use el código de país (por ejemplo, +44)";
+"cardNumberInvalid" = "رقم البطاقة غير صحيح";
+"cardTypeNotAccepted" = "البطاقة غير مدعومة";
+"cvvInvalid" = "رقم الامان غير صحيح";
+"phoneNumberInvalid" = "Invalid, use country code (e.g. +44)";
 
-"cardViewControllerTitle" = "Pago";
-"addressViewControllerTitle" = "Facturación";
+"cardViewControllerTitle" = "شاشة الدفع";
+"addressViewControllerTitle" = "Billing";
+

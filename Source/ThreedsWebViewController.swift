@@ -13,6 +13,9 @@ public class ThreedsWebViewController: UIViewController,
 
     /// Delegate
     public weak var delegate: ThreedsWebViewControllerDelegate?
+    
+    public var rightBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+    public var leftBarButtonItem = UIBarButtonItem(title: "للخلف", style: .done, target: self, action: #selector(onTapBackButton))
 
     /// Url
     public var url: String?
@@ -39,6 +42,13 @@ public class ThreedsWebViewController: UIViewController,
         failUrl = ""
         super.init(coder: aDecoder)
     }
+    
+    @objc func onTapBackButton() {
+        
+        self.navigationController?.popViewController(animated: true)
+       // dismiss(animated: true, completion: nil)
+    }
+
 
     // MARK: - Lifecycle
 
@@ -53,6 +63,14 @@ public class ThreedsWebViewController: UIViewController,
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        rightBarButtonItem.target = self
+        rightBarButtonItem.action = nil
+        navigationItem.rightBarButtonItem = leftBarButtonItem
+        
+        leftBarButtonItem.target = self
+        leftBarButtonItem.action = #selector(onTapBackButton)
+        navigationItem.leftBarButtonItem = rightBarButtonItem
+        
         guard let authUrl = url else { return }
         let myURL = URL(string: authUrl)
         let myRequest = URLRequest(url: myURL!)
@@ -62,6 +80,26 @@ public class ThreedsWebViewController: UIViewController,
 
     // MARK: - WKNavigationDelegate
 
+    public func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        
+        self.navigationController?.title = "الرجاء الانتظار..."
+
+        return true
+    }
+    
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        print("Start to load")
+        //Util.CustomMBProgressHUDShow(view: self.view)
+        self.title = "الرجاء الانتظار..."
+        
+    }
+    
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        print("finish to load")
+        self.title = ""
+
+    }
+    
     /// Called when the web view begins to receive web content.
     public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         shouldDismiss(absoluteUrl: webView.url!)
@@ -83,16 +121,19 @@ public class ThreedsWebViewController: UIViewController,
             
             let token = getQueryStringParameter(url: absoluteUrl.absoluteString, param: "cko-payment-token")
             // success url, dismissing the page with the payment token
-            self.dismiss(animated: true) {
+           // self.dismiss(animated: true) {
                 self.delegate?.onSuccess3D(token: token ?? "")
-            }
+            self.navigationController?.popViewController(animated: true)
+
+           // }
         } else if url.contains(failUrl) {
             // fail url, dismissing the page
             let token = getQueryStringParameter(url: absoluteUrl.absoluteString, param: "cko-payment-token")
 
-            self.dismiss(animated: true) {
+            //self.dismiss(animated: true) {
                 self.delegate?.onFailure3D(token: token ?? "")
-            }
+            //}
+            self.navigationController?.popViewController(animated: true)
         }
     }
     

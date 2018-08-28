@@ -77,7 +77,9 @@ import UIKit
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         // get the date
         let formatter = DateFormatter()
+        formatter.locale = Locale.init(identifier: "en_US")
         formatter.dateFormat = "MMyyyy"
+        
         let selectedDateString =
         "\(getMonthFromPicker(pickerView))\(years[pickerView.selectedRow(inComponent: 1)])"
         let selectedDateOpt = formatter.date(from: selectedDateString)

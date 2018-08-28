@@ -1,9 +1,9 @@
 
-"cardNumber" = "Card Number*";
+"cardNumber" = "رقم البطاقة*";
 "cardholderName" = "Cardholder's name";
 "cardholderNameRequired" = "Cardholder's name*";
-"expirationDate" = "Expiration Date*";
-"cvv" = "CVV*";
+"expirationDate" = "تاريخ الانتهاء*";
+"cvv" = "رقم الامان CVV*";
 "billingDetails" = "Billing Details";
 "billingDetailsRequired" = "Billing Details*";
 "name" = "Name";
@@ -15,12 +15,13 @@
 "postcode" = "Postcode*";
 "phone" = "Phone*";
 
-"acceptedCards" = "Accepted Cards";
+"acceptedCards" = "البطاقات المدعومة";
 
-"cardNumberInvalid" = "The card number is invalid";
-"cardTypeNotAccepted" = "The card type is not accepted";
-"cvvInvalid" = "The cvv is invalid";
+"cardNumberInvalid" = "رقم البطاقة غير صحيح";
+"cardTypeNotAccepted" = "البطاقة غير مدعومة";
+"cvvInvalid" = "رقم الامان غير صحيح";
 "phoneNumberInvalid" = "Invalid, use country code (e.g. +44)";
 
-"cardViewControllerTitle" = "Payment";
+"cardViewControllerTitle" = "شاشة الدفع";
 "addressViewControllerTitle" = "Billing";
+

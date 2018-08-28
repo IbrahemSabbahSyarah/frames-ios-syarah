@@ -68,7 +68,7 @@ public class CardView: UIView {
         addViews()
         addInitialConstraints()
         backgroundColor = UIColor.groupTableViewBackground
-        acceptedCardLabel.text = "Accepted Cards"
+        acceptedCardLabel.text = "البطاقات المدعومة"
         cardNumberInputView.set(label: "cardNumber", backgroundColor: .white)
         expirationDateInputView.set(label: "expirationDate", backgroundColor: .white)
         cvvInputView.set(label: "cvv", backgroundColor: .white)
