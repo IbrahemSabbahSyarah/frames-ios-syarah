@@ -6,7 +6,8 @@ public class ThreedsWebViewController: UIViewController,
     WKNavigationDelegate {
 
     // MARK: - Properties
-
+    public var is_paypal = false
+    
     var webView: WKWebView!
     let successUrl: String
     let failUrl: String
@@ -44,9 +45,14 @@ public class ThreedsWebViewController: UIViewController,
     }
     
     @objc func onTapBackButton() {
-        
-        self.navigationController?.popViewController(animated: true)
-       // dismiss(animated: true, completion: nil)
+        if is_paypal{
+            
+            dismiss(animated: true, completion: nil)
+        }
+        else{
+            self.navigationController?.popViewController(animated: true)
+        }
+
     }
 
 
@@ -108,8 +114,15 @@ public class ThreedsWebViewController: UIViewController,
     /// Called when a web view receives a server redirect.
     public func webView(_ webView: WKWebView,
                         didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+        
+        if let url = webView.url{
+            if url.absoluteString.contains("syarah.com"){
+                
+                webView.stopLoading()
+            }
+        }
         // stop the redirection
-        webView.stopLoading()
+        
         shouldDismiss(absoluteUrl: webView.url!)
     }
 
