@@ -32,12 +32,10 @@ open class CardViewController: UIViewController,
     private var lastSelected: UIImageView?
 
     /// Right bar button item
-    public var rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save,
-                                                    target: self,
-                                                    action: #selector(onTapDoneCardButton))
     public var leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save,
                                                     target: self,
-                                                    action: #selector(onTapBackButton))
+                                                    action: #selector(onTapDoneCardButton))
+    public var rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "ic_back"), style: .done, target: self, action: #selector(onTapBackButton))
 
     // MARK: - Initialization
 
@@ -71,13 +69,15 @@ open class CardViewController: UIViewController,
     /// Called after the controller's view is loaded into memory.
     override open func viewDidLoad() {
         super.viewDidLoad()
+        rightBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
         rightBarButtonItem.target = self
-        rightBarButtonItem.action = #selector(onTapDoneCardButton)
-        navigationItem.rightBarButtonItem = leftBarButtonItem
+        rightBarButtonItem.action = #selector(onTapBackButton)
+        navigationItem.rightBarButtonItem = rightBarButtonItem
         
         leftBarButtonItem.target = self
-        leftBarButtonItem.action = #selector(onTapBackButton)
-        navigationItem.leftBarButtonItem = rightBarButtonItem
+        leftBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
+        leftBarButtonItem.action = #selector(onTapDoneCardButton)
+        navigationItem.leftBarButtonItem = leftBarButtonItem
         navigationItem.leftBarButtonItem?.isEnabled = false
 
         // add gesture recognizer

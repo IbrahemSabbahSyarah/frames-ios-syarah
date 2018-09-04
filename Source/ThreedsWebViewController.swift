@@ -6,7 +6,7 @@ public class ThreedsWebViewController: UIViewController,
     WKNavigationDelegate {
 
     // MARK: - Properties
-    public var is_paypal = false
+    //public var is_paypal = false
     
     var webView: WKWebView!
     let successUrl: String
@@ -15,8 +15,8 @@ public class ThreedsWebViewController: UIViewController,
     /// Delegate
     public weak var delegate: ThreedsWebViewControllerDelegate?
     
-    public var rightBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
-    public var leftBarButtonItem = UIBarButtonItem(title: "للخلف", style: .done, target: self, action: #selector(onTapBackButton))
+    public var leftBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+    public var rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "ic_back"), style: .done, target: self, action: #selector(onTapBackButton))
 
     /// Url
     public var url: String?
@@ -45,13 +45,15 @@ public class ThreedsWebViewController: UIViewController,
     }
     
     @objc func onTapBackButton() {
-        if is_paypal{
-            
-            dismiss(animated: true, completion: nil)
+       // if is_paypal{
+        
+        self.dismiss(animated: false) {
+            self.delegate?.onCancel()
         }
-        else{
-            self.navigationController?.popViewController(animated: true)
-        }
+       // }
+       // else{
+       //     self.navigationController?.popViewController(animated: true)
+       // }
 
     }
 
@@ -69,13 +71,15 @@ public class ThreedsWebViewController: UIViewController,
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+        rightBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
         rightBarButtonItem.target = self
-        rightBarButtonItem.action = nil
-        navigationItem.rightBarButtonItem = leftBarButtonItem
+        rightBarButtonItem.action = #selector(onTapBackButton)
+        navigationItem.rightBarButtonItem = rightBarButtonItem
         
         leftBarButtonItem.target = self
-        leftBarButtonItem.action = #selector(onTapBackButton)
-        navigationItem.leftBarButtonItem = rightBarButtonItem
+        leftBarButtonItem.action = nil
+        navigationItem.leftBarButtonItem = leftBarButtonItem
         
         guard let authUrl = url else { return }
         let myURL = URL(string: authUrl)
@@ -134,19 +138,19 @@ public class ThreedsWebViewController: UIViewController,
             
             let token = getQueryStringParameter(url: absoluteUrl.absoluteString, param: "cko-payment-token")
             // success url, dismissing the page with the payment token
-           // self.dismiss(animated: true) {
+            self.dismiss(animated: true) {
                 self.delegate?.onSuccess3D(token: token ?? "")
-            self.navigationController?.popViewController(animated: true)
+            //self.navigationController?.popViewController(animated: true)
 
-           // }
+            }
         } else if url.contains(failUrl) {
             // fail url, dismissing the page
             let token = getQueryStringParameter(url: absoluteUrl.absoluteString, param: "cko-payment-token")
 
-            //self.dismiss(animated: true) {
+            self.dismiss(animated: true) {
                 self.delegate?.onFailure3D(token: token ?? "")
-            //}
-            self.navigationController?.popViewController(animated: true)
+            }
+            //self.navigationController?.popViewController(animated: true)
         }
     }
     
@@ -155,4 +159,30 @@ public class ThreedsWebViewController: UIViewController,
         return url.queryItems?.first(where: { $0.name == param })?.value
     }
 
+}
+
+
+extension UIColor {
+    class func hexColor(hex: String)-> UIColor {
+        var cString = hex.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).uppercased()
+        
+        if (cString.hasPrefix("#")) {
+            cString = cString.substring(from: cString.index(cString.startIndex, offsetBy: 1))
+        }
+        
+        if (cString.characters.count != 6) {
+            return UIColor.gray
+        }
+        
+        var rgbValue:UInt32 = 0
+        
+        Scanner(string: cString).scanHexInt32(&rgbValue)
+        
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
+    }
 }

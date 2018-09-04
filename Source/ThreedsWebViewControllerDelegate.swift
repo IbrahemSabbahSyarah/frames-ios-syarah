@@ -8,4 +8,8 @@ public protocol ThreedsWebViewControllerDelegate: class {
 
     /// Called if the response is unsuccesful
     func onFailure3D(token:String)
+    
+    
+    func onCancel()
+    
 }
