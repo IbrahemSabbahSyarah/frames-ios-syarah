@@ -90,7 +90,7 @@ public class ThreedsWebViewController: UIViewController,
 
     // MARK: - WKNavigationDelegate
 
-    public func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    public func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
         
         self.navigationController?.title = "الرجاء الانتظار..."
 

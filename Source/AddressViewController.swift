@@ -11,7 +11,7 @@ public class AddressViewController: UIViewController,
     /// Address View
     public let addressView: AddressView! = AddressView(frame: .zero)
     let countrySelectionViewController = CountrySelectionViewController()
-    let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done,
+    let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done,
                                      target: self, action: nil)
     var notificationCenter: NotificationCenter = NotificationCenter.default
     var regionCodeSelected: String?
