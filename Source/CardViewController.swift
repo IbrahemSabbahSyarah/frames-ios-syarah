@@ -143,9 +143,9 @@ open class CardViewController: UIViewController,
 
     @objc func onTapDoneCardButton() {
         // Get the values
-        let cardNumber = cardView.cardNumberInputView.textField.text!
+        let cardNumber = convert(toEnglishNumber: cardView.cardNumberInputView.textField.text!)
         let expirationDate = cardView.expirationDateInputView.textField.text!
-        let cvv = cardView.cvvInputView.textField.text!
+        let cvv = convert(toEnglishNumber: cardView.cvvInputView.textField.text!)
 
         let cardNumberStandardized = cardUtils.standardize(cardNumber: cardNumber)
         // Validate the values
@@ -180,6 +180,20 @@ open class CardViewController: UIViewController,
                                     name: cardView.cardHolderNameInputView.textField.text,
                                     billingAddress: billingDetailsAddress)
         self.delegate?.onTapDone(controller: self, card: card)
+    }
+    
+    func convert(toEnglishNumber: String) -> String {
+        let formatter = NumberFormatter()
+        var st = toEnglishNumber
+        formatter.locale = Locale(identifier: "ar")
+        //let count = toEnglishNumber.characters.count
+        
+        for i in 0..<10 {
+            let num = i
+            st = st.replacingOccurrences(of: formatter.string(from: NSNumber.init(value: num))!, with: String(num))
+        }
+        return st
+
     }
 
     // MARK: - AddressViewControllerDelegate
