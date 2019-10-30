@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 /// A view controller that allows the user to enter card information.
-open class CardViewController: UIViewController,
+public class CardViewController: UIViewController,
     AddressViewControllerDelegate,
     CardNumberInputViewDelegate,
     CvvInputViewDelegate,
@@ -14,12 +14,15 @@ open class CardViewController: UIViewController,
     public let cardView: CardView
     let cardUtils = CardUtils()
 
+    public let checkoutApiClient: CheckoutAPIClient?
+
     let cardHolderNameState: InputState
     let billingDetailsState: InputState
 
-    var billingDetailsAddress: CkoAddress?
+    public var billingDetailsAddress: CkoAddress?
+    public var billingDetailsPhone: CkoPhoneNumber?
     var notificationCenter = NotificationCenter.default
-    let addressViewController = AddressViewController()
+    public let addressViewController: AddressViewController
 
     /// List of available schemes
     public var availableSchemes: [CardScheme] = [.visa, .mastercard, .americanExpress,
@@ -32,19 +35,26 @@ open class CardViewController: UIViewController,
     private var lastSelected: UIImageView?
 
     /// Right bar button item
-    public var leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save,
-                                                    target: self,
-                                                    action: #selector(onTapDoneCardButton))
-    public var rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "ic_back"), style: .done, target: self, action: #selector(onTapBackButton))
+      public var leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save,
+                                                      target: self,
+                                                      action: #selector(onTapDoneCardButton))
+    
+      public var rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "ic_back"), style: .done, target: self, action: #selector(onTapBackButton))
+    
+    
+    var topConstraint: NSLayoutConstraint?
 
     // MARK: - Initialization
 
     /// Returns a newly initialized view controller with the cardholder's name and billing details
-    /// state specified.
-    public init(cardHolderNameState: InputState, billingDetailsState: InputState) {
+    /// state specified. You can specified the region using the Iso2 region code ("UK" for "United Kingdom")
+    public init(checkoutApiClient: CheckoutAPIClient, cardHolderNameState: InputState,
+                billingDetailsState: InputState, defaultRegionCode: String? = nil) {
+        self.checkoutApiClient = checkoutApiClient
         self.cardHolderNameState = cardHolderNameState
         self.billingDetailsState = billingDetailsState
         cardView = CardView(cardHolderNameState: cardHolderNameState, billingDetailsState: billingDetailsState)
+        addressViewController = AddressViewController(initialCountry: "you", initialRegionCode: defaultRegionCode)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -53,6 +63,8 @@ open class CardViewController: UIViewController,
         cardHolderNameState = .required
         billingDetailsState = .required
         cardView = CardView(cardHolderNameState: cardHolderNameState, billingDetailsState: billingDetailsState)
+        addressViewController = AddressViewController()
+        checkoutApiClient = nil
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
 
@@ -61,25 +73,29 @@ open class CardViewController: UIViewController,
         cardHolderNameState = .required
         billingDetailsState = .required
         cardView = CardView(cardHolderNameState: cardHolderNameState, billingDetailsState: billingDetailsState)
+        addressViewController = AddressViewController()
+        checkoutApiClient = nil
         super.init(coder: aDecoder)
     }
 
     // MARK: - Lifecycle
 
     /// Called after the controller's view is loaded into memory.
-    override open func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
+        
         rightBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
         rightBarButtonItem.target = self
         rightBarButtonItem.action = #selector(onTapBackButton)
         navigationItem.rightBarButtonItem = rightBarButtonItem
-        
         leftBarButtonItem.target = self
         leftBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
         leftBarButtonItem.action = #selector(onTapDoneCardButton)
         navigationItem.leftBarButtonItem = leftBarButtonItem
         navigationItem.leftBarButtonItem?.isEnabled = false
-
+        
+        
+    
         // add gesture recognizer
         cardView.addressTapGesture.addTarget(self, action: #selector(onTapAddressView))
         cardView.billingDetailsInputView.addGestureRecognizer(cardView.addressTapGesture)
@@ -91,10 +107,13 @@ open class CardViewController: UIViewController,
         view.backgroundColor = .groupTableViewBackground
         cardView.schemeIconsStackView.setIcons(schemes: availableSchemes)
         setInitialDate()
+
+        self.automaticallyAdjustsScrollViewInsets = false
+
     }
 
     /// Notifies the view controller that its view is about to be added to a view hierarchy.
-    open override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         title = "cardViewControllerTitle".localized(forClass: CardViewController.self)
         registerKeyboardHandlers(notificationCenter: notificationCenter,
@@ -103,42 +122,49 @@ open class CardViewController: UIViewController,
     }
 
     /// Notifies the view controller that its view is about to be removed from a view hierarchy.
-    open override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         deregisterKeyboardHandlers(notificationCenter: notificationCenter)
     }
 
     /// Called to notify the view controller that its view has just laid out its subviews.
-    open override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         view.addSubview(cardView)
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.leftAnchor.constraint(equalTo: view.safeLeftAnchor).isActive = true
         cardView.rightAnchor.constraint(equalTo: view.safeRightAnchor).isActive = true
-        cardView.topAnchor.constraint(equalTo: view.safeTopAnchor).isActive = true
-        cardView.bottomAnchor.constraint(equalTo: view.safeBottomAnchor).isActive = true
+
+        self.topConstraint = cardView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor)
+        if #available(iOS 11.0, *) {
+            cardView.topAnchor.constraint(equalTo: view.safeTopAnchor).isActive = true
+        } else {
+            self.topConstraint?.isActive = true
+        }
+        cardView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        if #available(iOS 11.0, *) {} else {
+            cardView.scrollView.contentSize = CGSize(width: self.view.frame.width,
+                                                        height: self.view.frame.height + 10)
+        }
+
+    }
+
+    /// MARK: Methods
+    public func setDefault(regionCode: String) {
+        addressViewController.regionCodeSelected = regionCode
     }
 
     private func setInitialDate() {
-        
-        //let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-        //let components = calendar.dateComponents([.year], from: Date())
-        
         let calendar = Calendar(identifier: .gregorian)
         let date = Date()
-        
         let month = calendar.component(.month, from: date)
-        let year = calendar.component(.year, from: date)
+        let year = String(calendar.component(.year, from: date))
         let monthString = month < 10 ? "0\(month)" : "\(month)"
-        cardView.expirationDateInputView.textField.text = "\(monthString)/\(year)"
+        cardView.expirationDateInputView.textField.text =
+            "\(monthString)/\(year.substring(with: NSRange(location: 2, length: 2)))"
     }
 
     @objc func onTapAddressView() {
         navigationController?.pushViewController(addressViewController, animated: true)
-    }
-    
-    @objc func onTapBackButton() {
-
-        dismiss(animated: true, completion: nil)
     }
 
     @objc func onTapDoneCardButton() {
@@ -174,37 +200,32 @@ open class CardViewController: UIViewController,
         if !isCardNumberValid || !isExpirationDateValid || !isCvvValid || !isCardTypeValid { return }
 
         let card = CkoCardTokenRequest(number: cardNumberStandardized,
-                                    expiryMonth: expiryMonth,
-                                    expiryYear: expiryYear,
-                                    cvv: cvv,
-                                    name: cardView.cardHolderNameInputView.textField.text,
-                                    billingAddress: billingDetailsAddress)
-        self.delegate?.onTapDone(controller: self, card: card)
-    }
-    
-    func convert(toEnglishNumber: String) -> String {
-        let formatter = NumberFormatter()
-        var st = toEnglishNumber
-        formatter.locale = Locale(identifier: "ar")
-        //let count = toEnglishNumber.characters.count
-        
-        for i in 0..<10 {
-            let num = i
-            st = st.replacingOccurrences(of: formatter.string(from: NSNumber.init(value: num))!, with: String(num))
+                                       expiryMonth: expiryMonth,
+                                       expiryYear: expiryYear,
+                                       cvv: cvv,
+                                       name: cardView.cardHolderNameInputView.textField.text,
+                                       billingAddress: billingDetailsAddress,
+                                       phone: billingDetailsPhone)
+        if let checkoutApiClientUnwrap = checkoutApiClient {
+            self.delegate?.onSubmit(controller: self)
+            checkoutApiClientUnwrap.createCardToken(card: card, successHandler: { cardToken in
+                self.delegate?.onTapDone(controller: self, cardToken: cardToken, status: .success)
+            }, errorHandler: { _ in
+                self.delegate?.onTapDone(controller: self, cardToken: nil, status: .success)
+            })
         }
-        return st
-
     }
 
     // MARK: - AddressViewControllerDelegate
 
     /// Executed when an user tap on the done button.
-    public func onTapDoneButton(controller: AddressViewController, address: CkoAddress) {
+    public func onTapDoneButton(controller: AddressViewController, address: CkoAddress, phone: CkoPhoneNumber) {
         billingDetailsAddress = address
         let value = "\(address.addressLine1 ?? ""), \(address.city ?? "")"
         cardView.billingDetailsInputView.value.text = value
         validateFieldsValues()
         // return to CardViewController
+        self.topConstraint?.isActive = false
         controller.navigationController?.popViewController(animated: true)
     }
 
@@ -277,7 +298,7 @@ open class CardViewController: UIViewController,
             lastSelected = nil
         }
         guard let type = cardType else { return }
-        let index = availableSchemes.index(of: type.scheme)
+        let index = availableSchemes.firstIndex(of: type.scheme)
         guard let indexScheme = index else { return }
         let imageView = cardView.schemeIconsStackView.arrangedSubviews[indexScheme] as? UIImageView
 
@@ -296,6 +317,25 @@ open class CardViewController: UIViewController,
 
     public func onChangeCvv() {
         validateFieldsValues()
+    }
+
+    func convert(toEnglishNumber: String) -> String {
+        let formatter = NumberFormatter()
+        var st = toEnglishNumber
+        formatter.locale = Locale(identifier: "ar")
+        //let count = toEnglishNumber.characters.count
+        
+        for i in 0..<10 {
+            let num = i
+            st = st.replacingOccurrences(of: formatter.string(from: NSNumber.init(value: num))!, with: String(num))
+        }
+        return st
+
+    }
+    
+    @objc func onTapBackButton() {
+
+           dismiss(animated: true, completion: nil)
     }
 
 }

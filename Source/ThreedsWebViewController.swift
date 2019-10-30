@@ -170,7 +170,7 @@ extension UIColor {
             cString = cString.substring(from: cString.index(cString.startIndex, offsetBy: 1))
         }
         
-        if (cString.characters.count != 6) {
+        if (cString.count != 6) {
             return UIColor.gray
         }
         

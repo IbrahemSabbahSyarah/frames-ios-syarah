@@ -65,28 +65,35 @@ public class CardView: UIView {
     // MARK: - Methods
 
     private func setup() {
+        scrollView.keyboardDismissMode = .onDrag
         addViews()
         addInitialConstraints()
-        backgroundColor = UIColor.groupTableViewBackground
-        acceptedCardLabel.text = "البطاقات المدعومة"
-        cardNumberInputView.set(label: "cardNumber", backgroundColor: .white)
-        expirationDateInputView.set(label: "expirationDate", backgroundColor: .white)
-        cvvInputView.set(label: "cvv", backgroundColor: .white)
+        backgroundColor = CheckoutTheme.primaryBackgroundColor
+        acceptedCardLabel.text = "acceptedCards".localized(forClass: CardView.self)
+        acceptedCardLabel.font = CheckoutTheme.font
+        acceptedCardLabel.textColor = CheckoutTheme.color
+        cardNumberInputView.set(label: "cardNumber", backgroundColor: CheckoutTheme.secondaryBackgroundColor)
+        expirationDateInputView.set(label: "expirationDate", backgroundColor: CheckoutTheme.secondaryBackgroundColor)
+        cvvInputView.set(label: "cvv", backgroundColor: CheckoutTheme.secondaryBackgroundColor)
         // card holder name
         if cardHolderNameState == .required {
-            cardHolderNameInputView.set(label: "cardholderNameRequired", backgroundColor: .white)
+            cardHolderNameInputView.set(label: "cardholderNameRequired",
+                                        backgroundColor: CheckoutTheme.secondaryBackgroundColor)
         } else {
-            cardHolderNameInputView.set(label: "cardholderName", backgroundColor: .white)
+            cardHolderNameInputView.set(label: "cardholderName",
+                                        backgroundColor: CheckoutTheme.secondaryBackgroundColor)
         }
         // billing details
         if billingDetailsState == .required {
-            billingDetailsInputView.set(label: "billingDetailsRequired", backgroundColor: .white)
+            billingDetailsInputView.set(label: "billingDetailsRequired",
+                                        backgroundColor: CheckoutTheme.secondaryBackgroundColor)
         } else {
-            billingDetailsInputView.set(label: "billingDetails", backgroundColor: .white)
+            billingDetailsInputView.set(label: "billingDetails",
+                                        backgroundColor: CheckoutTheme.secondaryBackgroundColor)
         }
 
         cardNumberInputView.textField.placeholder = "4242"
-        expirationDateInputView.textField.placeholder = "06/2020"
+        expirationDateInputView.textField.placeholder = "06/20"
         cvvInputView.textField.placeholder = "100"
         cvvInputView.textField.keyboardType = .numberPad
 
@@ -126,12 +133,13 @@ public class CardView: UIView {
         schemeIconsStackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
+        self.translatesAutoresizingMaskIntoConstraints = false
 
         acceptedCardLabel.trailingAnchor
             .constraint(equalTo: contentView.trailingAnchor, constant: -8)
             .isActive = true
         acceptedCardLabel.heightAnchor.constraint(equalToConstant: 16).isActive = true
-        acceptedCardLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16).isActive = true
+        acceptedCardLabel.topAnchor.constraint(equalTo: contentView.safeTopAnchor, constant: 16).isActive = true
         acceptedCardLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8)
             .isActive = true
 

@@ -59,9 +59,7 @@ import UIKit
 
         // add values
         textField.keyboardType = .default
-        if #available(iOS 10.0, *) {
-            textField.textContentType = .name
-        } 
+        textField.textContentType = .name
         textField.textAlignment = .right
         stackview.axis = .vertical
         stackview.backgroundColor = .clear
@@ -77,7 +75,12 @@ import UIKit
         stackview.addArrangedSubview(errorView)
 
         errorView.isHidden = true
-        errorLabel.textColor = .red
+        errorLabel.textColor = CheckoutTheme.errorColor
+        errorLabel.font = CheckoutTheme.font
+        label.textColor = CheckoutTheme.color
+        label.font = CheckoutTheme.font
+        textField.font = CheckoutTheme.font
+        textField.textColor = CheckoutTheme.color
 
         addSubview(stackview)
 
@@ -114,10 +117,13 @@ import UIKit
 
         textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8).isActive = true
         label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        label.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor, constant: 8)
+        label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8)
             .isActive = true
         textField.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         textField.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8).isActive = true
+        if #available(iOS 11.0, *) {} else {
+            label.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        }
     }
 
     func set(label: String, backgroundColor: UIColor) {

@@ -65,7 +65,7 @@ import UIKit
         let year = calendar.component(.year, from: date)
 
         let monthIndex = month - 1
-        let yearIndex = years.index(of: String(year))
+        let yearIndex = years.firstIndex(of: String(year))
 
         selectRow(monthIndex, inComponent: 0, animated: animated)
         selectRow(yearIndex!, inComponent: 1, animated: animated)
@@ -79,7 +79,6 @@ import UIKit
         let formatter = DateFormatter()
         formatter.locale = Locale.init(identifier: "en_US")
         formatter.dateFormat = "MMyyyy"
-        
         let selectedDateString =
         "\(getMonthFromPicker(pickerView))\(years[pickerView.selectedRow(inComponent: 1)])"
         let selectedDateOpt = formatter.date(from: selectedDateString)

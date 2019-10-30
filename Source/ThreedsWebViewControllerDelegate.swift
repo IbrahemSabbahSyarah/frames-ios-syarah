@@ -11,5 +11,4 @@ public protocol ThreedsWebViewControllerDelegate: class {
     
     
     func onCancel()
-    
 }

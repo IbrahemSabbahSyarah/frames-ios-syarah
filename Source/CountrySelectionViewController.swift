@@ -33,7 +33,7 @@ public class CountrySelectionViewController: UIViewController,
     override public func viewDidLoad() {
         super.viewDidLoad()
         setup()
-        view.backgroundColor = UIColor.groupTableViewBackground
+        view.backgroundColor = CheckoutTheme.primaryBackgroundColor
         navigationItem.title = "countryRegion".localized(forClass: CountrySelectionViewController.self)
         // table view
         filteredCountries = countries
@@ -41,6 +41,9 @@ public class CountrySelectionViewController: UIViewController,
         tableView.dataSource = self
         // search bar
         searchBar.delegate = self
+
+        tableView.backgroundColor = CheckoutTheme.primaryBackgroundColor
+        searchBar.barStyle = CheckoutTheme.barStyle
     }
 
     private func setup() {
@@ -69,6 +72,12 @@ public class CountrySelectionViewController: UIViewController,
     /// Asks the data source to return the number of sections in the table view.
     public func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+
+    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.backgroundColor = CheckoutTheme.tertiaryBackgroundColor
+        cell.textLabel?.font = CheckoutTheme.font
+        cell.textLabel?.textColor = CheckoutTheme.color
     }
 
     /// Tells the data source to return the number of rows in a given section of a table view.
