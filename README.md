@@ -9,14 +9,14 @@
 ![license](https://img.shields.io/github/license/checkout/frames-ios.svg)
 
 <p align="center">
-	<img src="https://github.com/checkout/frames-ios/blob/master/screenshots/demo-frames-ios.gif" width="320" alt="Demo frames ios"/>
+	<img src="https://github.com/checkout/frames-ios/blob/master/screenshots/demo-frames-ios.gif?raw=true" width="320" alt="Demo frames ios"/>
 </p>
 
 ## Requirements
 
 - iOS 10.0+
 - Xcode 9.0+
-- Swift 4.1+
+- Swift 5.0+
 
 ## Documentation
 
@@ -47,7 +47,7 @@ platform :ios, '10.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-    pod 'Frames', '~> 2.2'
+    pod 'Frames', '~> 3.0'
 end
 ```
 
@@ -71,7 +71,7 @@ $ brew install carthage
 To integrate FramesIos into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "checkout/frames-ios" ~> 2.2
+github "checkout/frames-ios" ~> 3.0
 ```
 
 Run `carthage update` to build the framework and drag the built `FramesIos` into your Xcode project.
@@ -91,7 +91,11 @@ class ViewController: UIViewController, CardViewControllerDelegate {
 
     let checkoutAPIClient = CheckoutAPIClient(publicKey: "pk_test_6ff46046-30af-41d9-bf58-929022d2cd14",
                                               environment: .sandbox)
-    let cardViewController = CardViewController(cardHolderNameState: .hidden, billingDetailsState: .hidden)
+    var cardViewController: CardViewController {
+        let checkoutAPIClient = CheckoutAPIClient(publicKey: "pk_test_03728582-062b-419c-91b5-63ac2a481e07",
+        environment: .sandbox)
+        return CardViewController(checkoutApiClient: checkoutAPIClient, cardHolderNameState: .hidden, billingDetailsState: .hidden)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,36 +146,49 @@ let cardNumber = "4242424242424242"
 let isCardValid = cardUtils.isValid(cardNumber: cardNumber)
 ```
 
-#### Create the card token request `CardTokenRequest`:
+#### Create the card token request `CkoCardTokenRequest`:
 
 ```swift
 // create the phone number
-let phoneNumber = CkoPhoneNumber(countryCode:number:)
+let phoneNumber = CkoPhoneNumber(countryCode: "44", number: "7777777777")
 // create the address
-let address = CkoAddress(name:addressLine1:addressLine2:city:state:postcode:country:phone:)
+let address = CkoAddress(addressLine1: "test1", addressLine2: "test2", city: "London", state: "London", zip: "N12345", country: "GB")
 // create the card token request
-let cardTokenRequest = CkoCardTokenRequest(number:expiryMonth:expiryYear:cvv:name:billingAddress:)
+let cardTokenRequest = CkoCardTokenRequest(number: cardNumber, expiryMonth: "07", expiryYear: "22", cvv: "100", name: "Test Customer", billingAddress: address, phone: phoneNumber)
 ```
 
 #### Create a card token:
 
 ```swift
-let checkoutAPIClient = CheckoutAPIClient(publicKey: "pk_......", environment: .live)
+let checkoutAPIClient = CheckoutAPIClient(publicKey: "pk_test_.....", environment: .sandbox)
 // create the phone number
-let phoneNumber = CkoPhoneNumber(countryCode:number:)
+let phoneNumber = CkoPhoneNumber(countryCode: "44", number: "7777777777")
 // create the address
-let address = CkoAddress(name:addressLine1:addressLine2:city:state:postcode:country:phone:)
+let address = CkoAddress(addressLine1: "test1", addressLine2: "test2", city: "London", state: "London", zip: "N12345", country: "GB")
 // create the card token request
-let cardTokenRequest = CkoCardTokenRequest(number:expiryMonth:expiryYear:cvv:name:billingAddress:)
-checkoutAPIClient.createCardToken(card: cardTokenRequest, successHandler: { cardTokenResponse in
-    // success
-}, errorHandler { error in
-    // error
-})
+checkoutAPIClient.createCardToken(card: cardTokenRequest, successHandler: { cardToken in
+            // success
+        }, errorHandler:  { error in
+            // error
+        })
 ```
 
 The success handler takes an array of `CkoCardTokenResponse` as a parameter.
 The error handler takes an `ErrorResponse` as a parameter.
+
+### Customize with `CheckoutTheme`
+
+```swift
+var cardViewController: CardViewController {
+    let checkoutAPIClient = CheckoutAPIClient(publicKey: "pk_test_03728582-062b-419c-91b5-63ac2a481e07",
+        environment: .sandbox)
+    CheckoutTheme.primaryBackgroundColor = .blue
+    CheckoutTheme.secondaryBackgroundColor = .purple
+    CheckoutTheme.errorColor = .yellow
+    CheckoutTheme.color = .green
+    return CardViewController(checkoutApiClient: checkoutAPIClient, cardHolderNameState: .hidden, billingDetailsState: .normal)
+}
+```
 
 ## License
 
