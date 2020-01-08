@@ -119,10 +119,14 @@ public class ThreedsWebViewController: UIViewController,
     public func webView(_ webView: WKWebView,
                         didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
         
+        var url_str:URL? = nil
         if let url = webView.url{
-            if url.absoluteString.contains("syarah.com"){
+            if url.absoluteString.contains("syarah.com") || url.absoluteString.contains("syarahonline.com"){
                 
+                url_str = url
+                shouldDismiss(absoluteUrl: url_str!)
                 webView.stopLoading()
+                return
             }
         }
         // stop the redirection
