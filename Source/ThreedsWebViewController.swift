@@ -75,11 +75,11 @@ public class ThreedsWebViewController: UIViewController,
         rightBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
         rightBarButtonItem.target = self
         rightBarButtonItem.action = #selector(onTapBackButton)
-        navigationItem.rightBarButtonItem = rightBarButtonItem
+        navigationItem.leftBarButtonItem = rightBarButtonItem
         
         leftBarButtonItem.target = self
         leftBarButtonItem.action = nil
-        navigationItem.leftBarButtonItem = leftBarButtonItem
+        navigationItem.rightBarButtonItem = leftBarButtonItem
         
         guard let authUrl = url else { return }
         let myURL = URL(string: authUrl)

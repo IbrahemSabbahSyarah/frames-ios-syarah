@@ -87,12 +87,12 @@ public class CardViewController: UIViewController,
         rightBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
         rightBarButtonItem.target = self
         rightBarButtonItem.action = #selector(onTapBackButton)
-        navigationItem.rightBarButtonItem = rightBarButtonItem
+        navigationItem.leftBarButtonItem = rightBarButtonItem
         leftBarButtonItem.target = self
         leftBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
         leftBarButtonItem.action = #selector(onTapDoneCardButton)
-        navigationItem.leftBarButtonItem = leftBarButtonItem
-        navigationItem.leftBarButtonItem?.isEnabled = false
+        navigationItem.rightBarButtonItem = leftBarButtonItem
+        navigationItem.rightBarButtonItem?.isEnabled = false
         
         
     
@@ -244,21 +244,21 @@ public class CardViewController: UIViewController,
 
         // check card holder's name
         if cardHolderNameState == .required && (cardView.cardHolderNameInputView.textField.text?.isEmpty)! {
-            navigationItem.leftBarButtonItem?.isEnabled = false
+            navigationItem.rightBarButtonItem?.isEnabled = false
             return
         }
         // check billing details
         if billingDetailsState == .required && billingDetailsAddress == nil {
-            navigationItem.leftBarButtonItem?.isEnabled = false
+            navigationItem.rightBarButtonItem?.isEnabled = false
             return
         }
         // values are not empty strings
         if cardNumber.isEmpty || expirationDate.isEmpty ||
             cvv.isEmpty {
-            navigationItem.leftBarButtonItem?.isEnabled = false
+            navigationItem.rightBarButtonItem?.isEnabled = false
             return
         }
-        navigationItem.leftBarButtonItem?.isEnabled = true
+        navigationItem.rightBarButtonItem?.isEnabled = true
     }
 
     @objc func keyboardWillShow(notification: NSNotification) {
