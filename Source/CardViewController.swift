@@ -168,6 +168,8 @@ public class CardViewController: UIViewController,
     }
 
     @objc func onTapDoneCardButton() {
+        
+        leftBarButtonItem.isEnabled = false
         // Get the values
         let cardNumber = convert(toEnglishNumber: cardView.cardNumberInputView.textField.text!)
         let expirationDate = cardView.expirationDateInputView.textField.text!
@@ -197,7 +199,12 @@ public class CardViewController: UIViewController,
             let message = "cvvInvalid".localized(forClass: CardViewController.self)
             cardView.cvvInputView.showError(message: message)
         }
-        if !isCardNumberValid || !isExpirationDateValid || !isCvvValid || !isCardTypeValid { return }
+        if !isCardNumberValid || !isExpirationDateValid || !isCvvValid || !isCardTypeValid {
+            
+            leftBarButtonItem.isEnabled = true
+            return
+            
+        }
 
         let card = CkoCardTokenRequest(number: cardNumberStandardized,
                                        expiryMonth: expiryMonth,
@@ -209,8 +216,10 @@ public class CardViewController: UIViewController,
         if let checkoutApiClientUnwrap = checkoutApiClient {
             self.delegate?.onSubmit(controller: self)
             checkoutApiClientUnwrap.createCardToken(card: card, successHandler: { cardToken in
+                self.leftBarButtonItem.isEnabled = true
                 self.delegate?.onTapDone(controller: self, cardToken: cardToken, status: .success)
             }, errorHandler: { _ in
+                self.leftBarButtonItem.isEnabled = true
                 self.delegate?.onTapDone(controller: self, cardToken: nil, status: .success)
             })
         }
