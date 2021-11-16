@@ -13,6 +13,7 @@ public class CardViewController: UIViewController,
     /// Card View
     public let cardView: CardView
     let cardUtils = CardUtils()
+    public let payButton = UIButton()
 
     public let checkoutApiClient: CheckoutAPIClient?
 
@@ -35,9 +36,9 @@ public class CardViewController: UIViewController,
     private var lastSelected: UIImageView?
 
     /// Right bar button item
-      public var leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save,
-                                                      target: self,
-                                                      action: #selector(onTapDoneCardButton))
+    public var leftBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)//UIBarButtonItem(barButtonSystemItem: .save,
+                                                     // target: self,
+                                                     // action: #selector(onTapDoneCardButton))
     
       public var rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "ic_back"), style: .done, target: self, action: #selector(onTapBackButton))
     
@@ -84,13 +85,23 @@ public class CardViewController: UIViewController,
     override public func viewDidLoad() {
         super.viewDidLoad()
         
+        payButton.backgroundColor = UIColor.hexColor(hex: "#00B362")
+        payButton.setTitle("اتمم عملية الدفع", for: .normal)
+        payButton.setTitleColor(.white, for: .normal)
+        payButton.titleLabel?.font = UIFont.systemFont(ofSize: 16,weight: .bold)
+        payButton.addTarget(self, action: #selector(onTapDoneCardButton), for: .touchUpInside)
+        payButton.layer.cornerRadius = 4
+        self.payButton.isEnabled = false
+        self.payButton.alpha = 0.5
+        view.addSubview(payButton)
+
         rightBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
         rightBarButtonItem.target = self
         rightBarButtonItem.action = #selector(onTapBackButton)
         navigationItem.leftBarButtonItem = rightBarButtonItem
-        leftBarButtonItem.target = self
-        leftBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
-        leftBarButtonItem.action = #selector(onTapDoneCardButton)
+        //leftBarButtonItem.target = self
+        //leftBarButtonItem.tintColor = UIColor.hexColor(hex: "#004AB1")
+        //leftBarButtonItem.action = #selector(onTapDoneCardButton)
         navigationItem.rightBarButtonItem = leftBarButtonItem
         navigationItem.rightBarButtonItem?.isEnabled = false
         
@@ -145,7 +156,19 @@ public class CardViewController: UIViewController,
             cardView.scrollView.contentSize = CGSize(width: self.view.frame.width,
                                                         height: self.view.frame.height + 10)
         }
+        
+        payButton.translatesAutoresizingMaskIntoConstraints = false
+        payButton.leftAnchor.constraint(equalTo: view.safeLeftAnchor,constant: 24).isActive = true
+        payButton.rightAnchor.constraint(equalTo: view.safeRightAnchor,constant: -24).isActive = true
+        payButton.heightAnchor.constraint(equalToConstant: 56).isActive = true
+        if #available(iOS 11.0, *) {
+            payButton.bottomAnchor.constraint(equalTo: view.safeBottomAnchor,constant: -40).isActive = true
+        } else {
+            payButton.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor,constant: -40).isActive = true
+        }
+        self.view.bringSubviewToFront(payButton)
 
+        
     }
 
     /// MARK: Methods
@@ -169,6 +192,8 @@ public class CardViewController: UIViewController,
 
     @objc func onTapDoneCardButton() {
         
+        payButton.isEnabled = false
+        payButton.alpha = 0.5
         leftBarButtonItem.isEnabled = false
         // Get the values
         let cardNumber = convert(toEnglishNumber: cardView.cardNumberInputView.textField.text!)
@@ -201,7 +226,9 @@ public class CardViewController: UIViewController,
         }
         if !isCardNumberValid || !isExpirationDateValid || !isCvvValid || !isCardTypeValid {
             
+            payButton.isEnabled = true
             leftBarButtonItem.isEnabled = true
+            payButton.alpha = 1.0
             return
             
         }
@@ -217,9 +244,13 @@ public class CardViewController: UIViewController,
             self.delegate?.onSubmit(controller: self)
             checkoutApiClientUnwrap.createCardToken(card: card, successHandler: { cardToken in
                 self.leftBarButtonItem.isEnabled = true
+                self.payButton.isEnabled = true
+                self.payButton.alpha = 1.0
                 self.delegate?.onTapDone(controller: self, cardToken: cardToken, status: .success)
             }, errorHandler: { _ in
                 self.leftBarButtonItem.isEnabled = true
+                self.payButton.isEnabled = true
+                self.payButton.alpha = 1.0
                 self.delegate?.onTapDone(controller: self, cardToken: nil, status: .success)
             })
         }
@@ -254,20 +285,28 @@ public class CardViewController: UIViewController,
         // check card holder's name
         if cardHolderNameState == .required && (cardView.cardHolderNameInputView.textField.text?.isEmpty)! {
             navigationItem.rightBarButtonItem?.isEnabled = false
+            self.payButton.isEnabled = false
+            self.payButton.alpha = 0.5
             return
         }
         // check billing details
         if billingDetailsState == .required && billingDetailsAddress == nil {
             navigationItem.rightBarButtonItem?.isEnabled = false
+            self.payButton.isEnabled = false
+            self.payButton.alpha = 0.5
             return
         }
         // values are not empty strings
         if cardNumber.isEmpty || expirationDate.isEmpty ||
             cvv.isEmpty {
             navigationItem.rightBarButtonItem?.isEnabled = false
+            self.payButton.isEnabled = false
+            self.payButton.alpha = 0.5
             return
         }
         navigationItem.rightBarButtonItem?.isEnabled = true
+        self.payButton.isEnabled = true
+        self.payButton.alpha = 1.0
     }
 
     @objc func keyboardWillShow(notification: NSNotification) {
