@@ -24,4 +24,6 @@
 
 "cardViewControllerTitle" = "شاشة الدفع";
 "addressViewControllerTitle" = "Billing";
+"buttonPayGo" = "اتمم عملية الدفع";
+"pleaseWait" = "الرجاء الإنتظار...";
 

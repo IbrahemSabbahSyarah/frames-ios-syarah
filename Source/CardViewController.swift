@@ -86,7 +86,7 @@ public class CardViewController: UIViewController,
         super.viewDidLoad()
         
         payButton.backgroundColor = UIColor.hexColor(hex: "#00B362")
-        payButton.setTitle("اتمم عملية الدفع", for: .normal)
+        payButton.setTitle("buttonPayGo".localized(forClass: CardViewController.self), for: .normal)
         payButton.setTitleColor(.white, for: .normal)
         payButton.titleLabel?.font = UIFont.systemFont(ofSize: 16,weight: .bold)
         payButton.addTarget(self, action: #selector(onTapDoneCardButton), for: .touchUpInside)

@@ -92,7 +92,7 @@ public class ThreedsWebViewController: UIViewController,
 
     public func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
         
-        self.navigationController?.title = "الرجاء الانتظار..."
+        self.navigationController?.title = "pleaseWait".localized(forClass: ThreedsWebViewController.self)
 
         return true
     }
@@ -100,7 +100,7 @@ public class ThreedsWebViewController: UIViewController,
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         print("Start to load")
         //Util.CustomMBProgressHUDShow(view: self.view)
-        self.title = "الرجاء الانتظار..."
+        self.title = "pleaseWait".localized(forClass: ThreedsWebViewController.self)
         
     }
     

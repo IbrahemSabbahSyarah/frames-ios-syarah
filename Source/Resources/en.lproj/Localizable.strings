@@ -24,3 +24,5 @@
 
 "cardViewControllerTitle" = "Payment";
 "addressViewControllerTitle" = "Billing";
+"buttonPayGo" = "Complete the payment";
+"pleaseWait" = "Please Wait...";
