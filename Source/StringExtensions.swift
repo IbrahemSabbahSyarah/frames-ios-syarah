@@ -11,7 +11,7 @@ extension String {
 
     func localized(forClass: AnyClass, comment: String = "") -> String {
         //let bundle = getBundle(forClass: forClass)
-        return self.localized(forLanguage: Locale.current.languageCode ?? "ar")// NSLocalizedString(self, bundle: bundle, comment: "")
+        return self.localized(forLanguage: Locale.preferredLanguages[0] ?? "ar")// NSLocalizedString(self, bundle: bundle, comment: "")
     }
 
     func image(forClass: AnyClass) -> UIImage {

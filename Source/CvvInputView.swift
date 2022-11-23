@@ -31,6 +31,7 @@ import UIKit
     private func setup() {
         textField.keyboardType = .numberPad
         textField.textContentType = nil
+        textField.textAlignment = Locale.preferredLanguages[0] == "ar" ? .left : .right
         textField.delegate = self
         textField.addTarget(self, action: #selector(textFieldDidChange), for: UIControl.Event.editingChanged)
     }

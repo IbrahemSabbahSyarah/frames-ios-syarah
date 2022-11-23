@@ -32,6 +32,7 @@ import UIKit
         #endif
         textField.keyboardType = .default
         textField.textContentType = .creditCardNumber
+        textField.textAlignment = Locale.preferredLanguages[0] == "ar" ? .left : .right
         textField.font = CheckoutTheme.font
         textField.delegate = self
         textField.addTarget(self, action: #selector(textFieldDidChange), for: UIControl.Event.editingChanged)
