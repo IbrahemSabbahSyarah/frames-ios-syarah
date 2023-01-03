@@ -40,7 +40,7 @@ public class CardViewController: UIViewController,
                                                      // target: self,
                                                      // action: #selector(onTapDoneCardButton))
     
-      public var rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "ic_back"), style: .done, target: self, action: #selector(onTapBackButton))
+    public var rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "ic_back"), style: .done, target: CardViewController.self, action: #selector(onTapBackButton))
     
     
     var topConstraint: NSLayoutConstraint?
@@ -120,6 +120,17 @@ public class CardViewController: UIViewController,
         setInitialDate()
 
         self.automaticallyAdjustsScrollViewInsets = false
+        
+        if #available(iOS 15, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .white
+            //navigationController?.navigationBar.compactAppearance
+            navigationController?.navigationBar.standardAppearance = appearance
+            navigationController?.navigationBar.scrollEdgeAppearance = appearance
+            navigationController?.navigationBar.compactAppearance = appearance
+            navigationController?.navigationBar.compactScrollEdgeAppearance = appearance
+        }
 
     }
 
